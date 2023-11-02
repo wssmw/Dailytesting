@@ -1,0 +1,21 @@
+/* CSS 初始化开始 */
+*{/*把所有标签的内外边距取消掉*/
+  margin: 0px;
+  padding: 0px;
+}
+ul{/*去掉ul的小圆点*/
+  list-style: none;
+}
+body{/*把主体设为统一格式*/
+  font-size: 12px;
+  font-family: "微软雅黑";
+  color:#716f70 ;
+}
+a{/*改变a链接的默认格式，颜色和下划线*/
+  color: #716f70;
+  text-decoration: none;
+}
+a.hover{/*改变鼠标经过颜色*/
+  color: skyblue;
+}
+/* CSS 初始化结束 */
