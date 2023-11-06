@@ -1,6 +1,5 @@
 import type { AxiosInstance,AxiosError } from "axios";
 import axios from "axios";
-console.log(axios,'axios');
 
 import { ElLoading } from "element-plus";
 import type { LoadingInstance } from "element-plus/es/components/loading/src/loading";
