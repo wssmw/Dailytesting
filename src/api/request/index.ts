@@ -22,7 +22,6 @@ class WsRequest {
         this.interceptors = config.interceptors
         this.instance.interceptors.request.use(
             (config)=>{
-                console.log('这里后执行');
                 if(this.isShowLoading){
                     this.loading = ElLoading.service({
                         fullscreen: true,
@@ -30,7 +29,6 @@ class WsRequest {
                         background: '#EEE'
                     })  
                 }
-                console.log(config);
                 return config
             },
             (error:AxiosError)=>{
@@ -52,7 +50,6 @@ class WsRequest {
         return new Promise((resolve,reject)=>{
             this.instance.request(config)
             .then((res)=>{
-                console.log('这里执行');
                 resolve(res)
             })
             .catch((err)=>{
