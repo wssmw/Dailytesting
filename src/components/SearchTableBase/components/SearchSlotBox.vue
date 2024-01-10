@@ -9,22 +9,22 @@
             <template v-for="(item,index) in searchFilterData" :key="item.type+index">
                 <div class="item" :style="{width:openMore?`${1/(maxNum+1)*100}%`:`${1/maxNum*100}%`}">
                     <el-form-item :label="item.label" v-if="item.type=='input'">
-                        <el-input size="small" v-model="item.value"/>
+                        <el-input style="width: 100%;" size="small" v-model="item.value"/>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='select'">
-                        <el-select size="small"/>
+                        <el-select style="width: 100%;" size="small" v-model="item.value"/>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='datePicker'">
-                        <el-date-picker size="small"/>
+                        <el-date-picker style="width: 100%;" size="small" v-model="item.value"/>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='treeSelect'">
-                        <el-tree-select size="small"/>
+                        <el-tree-select style="width: 100%;" size="small" v-model="item.value"/>
                     </el-form-item>
                 </div>
             </template>
             <div v-if="openMore" class="item" style="float: right;">
-                <el-button>重置</el-button>
-                <el-button>查询</el-button>
+                <el-button @click="resetting">重置</el-button>
+                <el-button @click="searchHandle">查询</el-button>
                 <el-button @click="openMore = false">高级查询</el-button>
             </div>
         </el-form>
@@ -41,7 +41,6 @@ import { ClickOutside } from 'element-plus'
 
 onMounted(()=>{
     const searchBoxWidth = searchslotbox.value?searchslotbox.value.offsetWidth:0
-    console.log(searchBoxWidth)
     searchMaxNum.forEach((item)=>{
         if(item.max>=searchBoxWidth&&item.min<=searchBoxWidth){
             maxNum.value = item.normal
@@ -91,7 +90,15 @@ const vClickOutSide = ClickOutside
 const clickHandle = () =>{
     openMore.value = false
 }
-
+// 重置
+const resetting = () =>{
+    console.log(props.searchFilterData);
+    props.searchFilterData?.forEach((item)=>{
+        item.value = ''
+    })
+    console.log(props.searchFilterData);
+}
+// 查询搜索
 const searchHandle = () =>{
     emits('doSearch')
 }

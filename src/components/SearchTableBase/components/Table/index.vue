@@ -2,10 +2,11 @@
     <div class="table">
         <div class="operate">
             <el-button @click="refresh">刷新</el-button>
-            <el-button>设置</el-button>
+            <el-button @click="openDialog">设置</el-button>
         </div>
+        <TableDialog ref="tableDialogRef" :columns="columns" @columnsChangeHandle="columnsChangeHandle"></TableDialog>
         <el-table class="tableMain" :data="data" :height="200" border>
-            <template v-for="item in columns" :key="item.id">
+            <template v-for="item in realColumns" :key="item.id">
                 <el-table-column 
                     :prop="item.prop" 
                     :label="item.label" 
@@ -16,15 +17,30 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from "vue"
+
 const props = defineProps({
     columns:Array<any>,
     data:Array<any>
 })
+const columnCheckList = ref(props.columns?.map((item)=>item.label))
+const realColumns = computed(()=>props.columns?.filter((item:any)=>columnCheckList.value?.includes(item.label)))
+const columnsChangeHandle = (value:any) =>{
+    console.log(value);
+    columnCheckList.value = value
+}
+
 const emits = defineEmits([
     'refresh'
 ])
+// 刷新
 const refresh = () =>{
     emits('refresh')
+}
+const tableDialogRef = ref()
+// 打开设置
+const openDialog = () =>{
+    tableDialogRef.value.openDialog()
 }
 </script>
 

@@ -74,6 +74,8 @@ const searchFilterDataParams = computed(()=>{
   return _obj
 })
 const doSearch = async () =>{
+  console.log(searchFilterDataParams.value);
+  
   await props.request?.apply(null,[{
     url: props.dataUrl ,
     data: {
