@@ -10,15 +10,19 @@
                 <el-table-column 
                     :prop="item.prop" 
                     :label="item.label" 
-                    :width="item.width" />
+                    :width="item.width">
+                    <template v-if="item.render">
+                        <render :params="item" :render="item.render"></render>
+                    </template>
+                </el-table-column>
             </template>
         </el-table>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue"
-
+import { computed, ref,h } from "vue"
+import { ElButton as sbutton } from 'element-plus'
 const props = defineProps({
     columns:Array<any>,
     data:Array<any>
@@ -42,6 +46,9 @@ const tableDialogRef = ref()
 const openDialog = () =>{
     tableDialogRef.value.openDialog()
 }
+const render =(e)=> {
+    return e.render(e.params,h)
+};
 </script>
 
 <style scoped lang="less">

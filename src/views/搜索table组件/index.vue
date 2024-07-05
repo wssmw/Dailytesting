@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import WsRequest from '@/api'
-import { reactive } from 'vue'
-
+import { reactive} from 'vue'
+import { ElButton as sbutton } from 'element-plus'
 
 const request = ( params:any ) =>{
   return new Promise((resolve,reject)=>{
@@ -24,6 +24,18 @@ const columns = [
   {
     label:'lastname',
     prop:'lastname'
+  },
+  {
+    label:'tesst',
+    render:(params,h)=>{
+      console.log(params,'params')
+      return h(
+        sbutton,
+        {
+        },
+        '按钮'
+      )
+    }
   }
 ]
 const batchDel = (value:any) =>{

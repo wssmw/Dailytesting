@@ -85,6 +85,7 @@ const doSearch = async () =>{
     },
   }]).then((res:any)=>{
     tableInfo.tableData = res.data
+    console.log(tableInfo.tableData,'zzz')
     pageInfo.total = res.total==undefined? 100 : res.total
   })
   console.log(pageInfo.total)
