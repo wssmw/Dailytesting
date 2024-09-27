@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import index from './views/搜索table组件/index.vue'
+import index from './views/关系图/index.vue'
 </script>
 
 <template>
@@ -8,6 +8,6 @@ import index from './views/搜索table组件/index.vue'
 
 <style scoped lang="less">
 .box {
-padding: 20px;
+  // margin: 20px;
 }
 </style>

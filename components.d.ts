@@ -17,6 +17,7 @@ declare module 'vue' {
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSelect: typeof import('element-plus/es')['ElSelect']
@@ -32,5 +33,6 @@ declare module 'vue' {
     SearchTableBase: typeof import('./src/components/SearchTableBase/index.vue')['default']
     Table: typeof import('./src/components/SearchTableBase/components/Table/index.vue')['default']
     TableDialog: typeof import('./src/components/SearchTableBase/components/Table/components/TableDialog.vue')['default']
+    WsSelection: typeof import('./src/components/WsSelection/index.vue')['default']
   }
 }
