@@ -1,12 +1,20 @@
 <template>
     <div class="test">
         <div class="box" @scroll="scrollHandle">
-            <template v-for="(item,index)  in data" :key="index">
+            <template v-for="(item,index)  in data5" :key="index">
                 <div class="item" :style="{marginLeft:'120px'}">
                     <div class="secItem" v-for="secItem in item" :key="secItem.value" >
-                        <div class="title" :ref="(el)=>getDivDom(el,secItem)">
-                            test{{ secItem.label }}
-                        </div>
+                        <el-popover>
+                            <template #reference>
+                                <div class="title" :ref="(el)=>getDivDom(el,secItem)" @click="clickHandle">
+                                    test{{ secItem.label }}
+                                </div>
+                            </template>
+                            <div>
+                                value:{{ secItem.value }}
+                                label:{{ secItem.label }}
+                            </div>
+                        </el-popover>
                     </div>
                 </div>
             </template>
@@ -24,6 +32,7 @@
   </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue';
+import { taransform }  from './dfs'
 const data = [
     [
         {
@@ -108,11 +117,135 @@ const data = [
         }
     ]
 ]
+let data1 = {
+    name: '1',
+    key: '1',
+    children: [
+        {
+            name: '2',
+            key: '2',
+            children: [
+                {
+                    name: '6',
+                    key: '6',
+                    children: [
+                        {
+                            name: '7',
+                            key: '7',
+                            children: [
+                                {
+                                    name: '8',
+                                    key: '8',
+                                },
+                                {
+                                    name: '20',
+                                    key: '20',
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: '3',
+            key: '3'
+        },
+        {
+            name: '4',
+            key: '4'
+        }
+    ]
+}
+let data2 = {
+    name: '9',
+    key: '9',
+    children: [
+        {
+            name: '7',
+            key: '7',
+            children: [
+                {
+                    name: '8',
+                    key: '8'
+                },
+                {
+                    name: '20',
+                    key: '20'
+                }
+            ]
+        },
+        {
+            name: '10',
+            key: '10',
+            children: [
+                {
+                    name: '11',
+                    key: '11',
+                    children: [
+                        {
+                            name: '12',
+                            key: '12',
+                            children: [
+                                {
+                                    name: '13',
+                                    key: '13',
+                                    children: [
+                                        {
+                                            name: '14',
+                                            key: '14',
+                                            children: [
+                                                {
+                                                    name: '15',
+                                                    key: '15',
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+let data3 = {
+    key: '5',
+    name: '5',
+    children: [
+        {
+            name: '6',
+            key: '6',
+            children: [
+                {
+                    name: '7',
+                    key: '7',
+                    children: [
+                        {
+                            name: '8',
+                            key: '8',
+                        },
+                        {
+                            name: '20',
+                            key: '20',
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+let data4 = [data1,data2,data3]
+let data5 = taransform(data4)
+console.log(data5,'data5')
 const scrollLeft = ref(0)
 const scrollHandle = (e) =>{
     scrollLeft.value = e.target.scrollLeft
 }
 const divDomList = ref({});
+// console.log(divDomList,'divDomList')
 const getDivDom = (el,item) =>{
     if(el){
         let copy = divDomList.value
@@ -137,7 +270,7 @@ const getPosition = (x1,y1,x2,y2) =>{
 }
 const lineArr = computed(()=>{
     let arr = []
-    data.forEach(item=>{
+    data5.forEach(item=>{
         item.forEach(secItem=>{
             if(Object.values(divDomList.value).length) {
                 let { value } = secItem
@@ -146,6 +279,9 @@ const lineArr = computed(()=>{
                     x2 = positionMap[value].x 
                     y2 = positionMap[value].y
                 }else {
+                    console.log(value,'divDomList')
+                    console.log(divDomList,'divDomList')
+                    console.log(divDomList.value[value],'divDomList')
                     let prev = divDomList.value[value].getBoundingClientRect()
                     x2 = prev.left
                     y2 = prev.top
@@ -153,6 +289,9 @@ const lineArr = computed(()=>{
                 }
                 if(secItem?.parent?.length) {
                     secItem.parent.forEach(tirItem=>{
+                        if(tirItem==null){
+                            return
+                        }
                         let x1,y1
                         if(positionMap[tirItem]) {
                             x1 = positionMap[tirItem].x
@@ -171,6 +310,9 @@ const lineArr = computed(()=>{
     })
     return arr
 })
+const clickHandle= () =>{
+    console.log('这里执行')
+}
 </script>
 <style scoped lang="less">
 .test {
@@ -197,6 +339,7 @@ const lineArr = computed(()=>{
                     border-radius: 50%;
                     color: white;
                     background:linear-gradient(135deg, #367ee8 0%, #3650e8 100%);
+                    cursor: pointer;
                 }
                 .connect {
                     top: 0;
