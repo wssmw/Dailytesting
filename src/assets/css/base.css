@@ -6,6 +6,9 @@
 ul{/*去掉ul的小圆点*/
   list-style: none;
 }
+li {
+  list-style: none;
+}
 body{/*把主体设为统一格式*/
   font-size: 12px;
   font-family: "微软雅黑";

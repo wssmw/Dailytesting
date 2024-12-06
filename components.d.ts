@@ -36,4 +36,7 @@ declare module 'vue' {
     TableDialog: typeof import('./src/components/SearchTableBase/components/Table/components/TableDialog.vue')['default']
     WsSelection: typeof import('./src/components/WsSelection/index.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

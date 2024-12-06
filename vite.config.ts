@@ -10,9 +10,10 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   server: {  
     port:8000,
+    hmr:true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:4523/m1/3781206-0-default',
+        target: 'https://apifoxmock.com/m1/3781196-0-default',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

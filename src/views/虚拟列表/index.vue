@@ -1,95 +1,71 @@
 <template>
-  <div ref="listRef" class="fakelist" @scroll="scrollEvent">
-    <div class="bg" :style="{ height: listHeight + 'px' }"></div>
-    <div :style="{transform:gettransfrom}">
-      <template v-for="item in listcontent">
-        <div class="item" :style="{ height: itemSize + 'px' }">
-          {{ item }}
+    <div class="virtualScrolling" ref="virtualScrolling" @scroll="scrollHandle">
+        <div class="bg" :style="{ height: `${totalHeight}px` }"></div>
+        <div class="content" ref="content" :style="{ transform: gettransfrom }">
+            <template v-for="item in realData">
+                <slot :item="item"> </slot>
+            </template>
         </div>
-      </template>
     </div>
-  </div>
 </template>
-<script>
-import { computed, ref, onMounted } from 'vue'
-import {a,loga} from './es6'
-// let {b,logb}  = require('./common.js')
-// console.log(a);
+<script setup>
+import { computed, onMounted, ref, useSlots } from 'vue'
+const { data } = defineProps({
+    data: Array
+})
+const content = ref()
+const virtualScrolling = ref()
+// 可视区域总高度
+const visibleAreaHeight = ref(0)
+// 可视区域数量
+const visibleCount = ref(0)
+// 单个item的高度
+const itemHeight = ref(0)
+// 起始索引
+const startIndex = ref(0)
+// 结束索引
+const endIndex = ref(10)
+// 数据量
+const dataLength = ref(data.length)
 
-// console.log(b);
-// b = 1
-// logb()
+const realData = computed(() => data.slice(startIndex.value, endIndex.value))
 
-// a = 1
-// loga()
-export default {
-  props: {
-    itemData: {
-      type: Array,
-      default: []
-    },
-    itemSize: {
-      type: Number,
-      default: 0
+const totalHeight = ref(0)
+
+const startOffset = ref()
+const gettransfrom = computed(() => `translate3d(0,${startOffset.value}px,0)`)
+
+onMounted(() => {
+    itemHeight.value = content.value.children[0].clientHeight
+    if (virtualScrolling.value) {
+        visibleAreaHeight.value = virtualScrolling.value.offsetHeight
+        visibleCount.value = Math.ceil(visibleAreaHeight.value / itemHeight.value)
+        endIndex.value = startIndex.value + visibleCount.value + 1
+        totalHeight.value = dataLength.value * itemHeight.value
     }
-  },
-  setup(props) {
-    const listRef = ref()
-    // 开始的索引
-    let start = ref(0)
-    // 结束的索引
-    let end = ref(0)
-    // 向下偏移量
-    const startOffset = ref(0)
-    // 总高度
-    const listHeight = props.itemData.length * props.itemSize
-    // 能看到的item的数量
-    const visibleCount = computed(() =>
-      Math.ceil(listHeight / props.itemSize)
-    )
-    // 能看到的内容
-    const listcontent = computed(() =>
-      props.itemData.slice(start.value, end.value)
-    )
-    // 偏移函数
-    const gettransfrom = computed(
-      () => `translate3d(0,${startOffset.value}px,0)`
-    )
-    onMounted(() => {
-      end.value = start.value + visibleCount.value
-    })
-    // 滚动函数
-    const scrollEvent = () => {
-      let scrollTop = listRef.value.scrollTop
-      console.log(scrollTop)
-      start.value = Math.floor(scrollTop / props.itemSize)
-      end.value = start.value + visibleCount.value
-      startOffset.value = scrollTop - (scrollTop % props.itemSize)
-    }
-    return {
-      listRef,
-      listcontent,
-      listHeight,
-      gettransfrom,
-      scrollEvent
-    }
-  }
+})
+
+const scrollHandle = (e) => {
+    let scrollTop = e.target.scrollTop
+    startIndex.value = Math.floor(scrollTop / itemHeight.value)
+    endIndex.value = startIndex.value + visibleCount.value + 1
+    startOffset.value = scrollTop - (scrollTop % itemHeight.value)
+
+    console.log(startIndex.value, endIndex.value)
+    console.log(realData.value)
 }
 </script>
-<style lang="less" scoped>
-.fakelist {
-  width: 500px;
-  height: 500px;
-  background-color: red;
-  overflow: auto;
-  .bg {
-    float: left;
-  }
-  .item {
-    display: flex;
-    justify-content: center ;
-    align-items: center;
-    width: 100%;
-  }
+<style scoped lang="less">
+.virtualScrolling {
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    overflow-anchor: none;
+    .bg {
+        float: left;
+    }
+    .content {
+        overflow-anchor: none;
+    }
 }
 </style>

@@ -10,7 +10,7 @@ import 'element-plus/theme-chalk/el-loading.css';
 
 
 const app = createApp(App)
-
+console.log(app,'app')
 app.use(createPinia())
 app.use(router)
 

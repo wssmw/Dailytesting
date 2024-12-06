@@ -5,7 +5,7 @@ import { ElLoading } from "element-plus";
 import type { LoadingInstance } from "element-plus/es/components/loading/src/loading";
 import type { RequestConfig } from "./type";
 
-const DEAFULT_LOADING = true
+const DEAFULT_LOADING = false
 
 class WsRequest {
     // axios实例
