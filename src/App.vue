@@ -1,190 +1,115 @@
-<!-- <script setup lang="ts">
-import index from './views/testAieditor/index.vue'
-console.log('这里执行')
-</script>
-
 <template>
-    <div class="box">
-        <index></index>
+    <div style="width: 400px">
+        <FormEnhance
+            ref="formEnhanceRef"
+            :formConfig="formConfig"
+            :formData="formData"
+        ></FormEnhance>
+        <el-button @click="clickHandle">提交</el-button>
     </div>
 </template>
+<script setup>
+import { onMounted, ref } from 'vue'
+import FormEnhance from './components/FormEnhance/index.vue'
 
-<style scoped lang="less">
-.box {
-    // margin: 20px;
-    height: 400px;
-}
-</style> -->
-<template>
-    <div class="article-container">
-        <div class="article-content" ref="articleContent">
-            <template v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" :key="item">
-                <h1 :id="`section${item}`">第{{ item }}章</h1>
-                <div style="height: 200px; background-color: pink">第{{ item }}章内容</div>
-            </template>
-        </div>
-        <div class="toc" ref="toc"></div>
-    </div>
-</template>
-
-<script>
-export default {
-    data() {
-        content: [
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第二章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            },
-            {
-                label: '第一章内容',
-                title: '第一章',
-                id: 1
-            }
-        ]
+// 表单数据
+const formData = ref({
+    name: '', //活动名称
+    region: '', //活动区域
+    date1: '', // 活动时间
+    delivery: false, // 开关
+    type: [], // 活动性质
+    resource: '', // 活动资源
+    desc: '' // 活动形式
+})
+// 表单配置
+const formConfig = [
+    // 活动名称
+    {
+        key: 'name',
+        type: 'input',
+        label: '活动名称',
+        placeholder: '请输入活动名称',
+        rules: [{ required: true, message: '请输入活动名称', trigger: 'blur' }]
     },
-    mounted() {
-        this.generateTOC()
-        this.setupScrollSpy()
+
+    // 活动区域
+    {
+        key: 'region',
+        type: 'select',
+        label: '活动区域',
+        placeholder: '请选择活动区域',
+        options: [],
+        rules: [{ required: true, message: '请选择活动区域', trigger: 'blur' }]
     },
-    methods: {
-        generateTOC() {
-            const articleContent = this.$refs.articleContent
-            const toc = this.$refs.toc
-            const headings = articleContent.querySelectorAll('h1, h2, h3')
-            console.log(headings, 'headings')
-            let tocHTML = '<ul>'
-            headings.forEach((heading) => {
-                const id = heading.id
-                const text = heading.textContent
-                const level = heading.tagName.toLowerCase()
-                tocHTML += `
-            <li class="toc-item toc-item-${level}">
-              <a href="#${id}">${text}</a>
-            </li>
-          `
-            })
-            tocHTML += '</ul>'
-            toc.innerHTML = tocHTML
-        },
-        setupScrollSpy() {
-            const headings = this.$refs.articleContent.querySelectorAll('h1, h2, h3')
-            const tocItems = this.$refs.toc.querySelectorAll('.toc-item')
 
-            window.addEventListener('scroll', () => {
-                let currentHeading = null
+    // 活动时间 (日期+分隔符+时间)
+    {
+        key: 'date1',
+        type: 'date',
+        label: '活动时间',
+        placeholder: '选择日期',
+        rules: [{ required: true, message: '请选择活动时间', trigger: 'change' }]
+    },
 
-                headings.forEach((heading) => {
-                    const rect = heading.getBoundingClientRect()
-                    if (rect.top <= 100) {
-                        currentHeading = heading
-                    }
-                })
+    // 即时配送
+    {
+        key: 'delivery',
+        type: 'switch',
+        label: '即时配送'
+    },
 
-                tocItems.forEach((item) => {
-                    item.classList.remove('active')
-                })
+    // 活动性质
+    {
+        key: 'type',
+        type: 'checkbox-group',
+        label: '活动性质',
+        options: [
+            { label: '美食/餐厅线上活动', value: '美食/餐厅线上活动' },
+            { label: '地推活动', value: '地推活动' },
+            { label: '线下主题活动', value: '线下主题活动' },
+            { label: '单纯品牌曝光', value: '单纯品牌曝光' }
+        ],
+        rules: [{ required: true, message: '请选择活动性质', trigger: 'blur' }]
+    },
+    // 特殊资源
+    {
+        key: 'resource',
+        type: 'radio-group',
+        label: '特殊资源',
+        options: [
+            { label: '线上品牌商赞助', value: '线上品牌商赞助' },
+            { label: '线下场地免费', value: '线下场地免费' }
+        ],
+        rules: [{ required: true, message: '请选择', trigger: 'blur' }]
+    },
 
-                if (currentHeading) {
-                    const activeTocItem = this.$refs.toc.querySelector(
-                        `a[href="#${currentHeading.id}"]`
-                    ).parentElement
-                    activeTocItem.classList.add('active')
-                }
-            })
-        }
+    // 活动形式
+    {
+        key: 'desc',
+        type: 'textarea',
+        label: '活动形式',
+        placeholder: '请输入活动形式',
+        rules: [{ required: true, message: '请输入活动形式', trigger: 'blur' }]
     }
+]
+
+const formEnhanceRef = ref()
+const clickHandle = () => {
+    console.log(formData.value)
+    formEnhanceRef.value.validate().then(() => {
+        console.log('校验成功')
+    })
+    console.log(formData.value)
 }
+
+onMounted(() => {
+    setTimeout(() => {
+        formConfig[1].options = [
+            { label: '区域一', value: '区域一' },
+            { label: '区域二', value: '区域二' }
+        ]
+    }, 200)
+})
 </script>
-
-<style>
-.article-container {
-    display: flex;
-}
-
-.article-content {
-    flex: 1;
-    padding-right: 20px;
-}
-
-.toc {
-    width: 250px;
-    position: sticky;
-    top: 20px;
-    max-height: 100vh;
-    overflow-y: auto;
-}
-
-.toc ul {
-    list-style: none;
-    padding: 0;
-}
-
-.toc-item {
-    margin: 5px 0;
-}
-
-.toc-item a {
-    text-decoration: none;
-    color: #333;
-}
-
-.toc-item a:hover {
-    color: #007bff;
-}
-
-.toc-item.active a {
-    color: #007bff;
-    font-weight: bold;
-}
-</style>
+<style scoped lang="scss"></style>
