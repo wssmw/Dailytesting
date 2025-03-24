@@ -4,16 +4,28 @@
     <SearchSlotBox class="searchslotbox" v-if="searchFilterData" 
       :searchFilterData="searchFilterData"
       @doSearch="doSearch"
-      />
+    />
     <!-- 中间操作按钮 -->
-    <el-scrollbar style="height: auto;">
-      <div style="display: flex;padding: 10px 0;">
-        <template v-for="(item,index) in operateData" :key="item.name+index">
+      <div style="display: flex;padding: 8px 0;">
+        <template v-for="(item,index) in viewOperateData" :key="item.name+index">
           <el-button @click="item.operate">{{ item.name }}</el-button>
+        </template>
+        <template v-if="hideOperateData?.length">
+          <el-dropdown>
+            <el-button style="margin-left: 12px;"> 更多操作 </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <template v-for="(item,index) in hideOperateData" :key="item.name+index">
+                  <el-dropdown-item @click="item.operate">
+                    {{ item.name }}
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </template>
       </div>
       
-    </el-scrollbar>
     <!-- table部分 -->
     <Table class="table" @refresh="doSearch" :columns="columns" :data="tableInfo.tableData"></Table>
     <!-- 分页部分 -->
@@ -32,7 +44,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive } from "vue"
 const props = defineProps({
-  abc:Number,
   request:{
     type:Function,
     required:true
@@ -43,12 +54,25 @@ const props = defineProps({
   },
   columns:Array,
   searchFilterData:Array,
-  operateData:Array
+  operateData:Array,
+  maxOperateNum: {
+    type:Number,
+    default: 4
+  }
 })
 const emits = defineEmits(['request'])
+
 const tableInfo = reactive({
   tableData:[]
 })
+
+/* 按钮部分开始 */
+
+const viewOperateData = computed(()=>props.operateData?.slice(0,props.maxOperateNum))
+const hideOperateData = computed(()=>props.operateData?.slice(props.maxOperateNum))
+
+/* 按钮部分结束 */
+ 
 // 分页器信息
 const pageInfo = reactive({ 
   pageSize: 10,

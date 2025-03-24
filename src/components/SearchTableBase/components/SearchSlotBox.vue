@@ -2,23 +2,30 @@
     <div class="searchslotbox" ref="searchslotbox" v-ClickOutSide="clickHandle">
         <el-form class="elform" :style="{
             width:openMore?'100%':`${maxNum/(maxNum+1)*100}%`,
-            height:!openMore?'50px':'auto',
+            height:!openMore?'48px':'auto',
             position:openMore?'absolute':'',
-            overflow:!openMore?'hidden':''
+            overflow:!openMore?'hidden':'',
+            boxShadow:openMore?'0 12px 48px 16px rgba(0,0,0,.03),0 9px 28px 0 rgba(0,0,0,.05),0 6px 16px -8px rgba(0,0,0,.08)':'',
             }">
             <template v-for="(item,index) in searchFilterData" :key="item.type+index">
                 <div class="item" :style="{width:openMore?`${1/(maxNum+1)*100}%`:`${1/maxNum*100}%`}">
                     <el-form-item :label="item.label" v-if="item.type=='input'">
-                        <el-input style="width: 100%;" size="small" v-model="item.value"/>
+                        <el-input style="width: 100%;"  v-model="item.value"/>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='select'">
-                        <el-select style="width: 100%;" size="small" v-model="item.value"/>
+                        <el-select style="width: 100%;"  v-model="item.value">
+                            <template v-for="secItem in item.selectList" :key="secItem.key">
+                                <el-option :value="secItem.key">
+                                    {{ secItem.label }}
+                                </el-option>
+                            </template>
+                        </el-select>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='datePicker'">
-                        <el-date-picker style="width: 100%;" size="small" v-model="item.value"/>
+                        <el-date-picker style="width: 100%;"  v-model="item.value"/>
                     </el-form-item>
                     <el-form-item :label="item.label" v-else-if="item.type=='treeSelect'">
-                        <el-tree-select style="width: 100%;" size="small" v-model="item.value"/>
+                        <el-tree-select style="width: 100%;"  v-model="item.value" :data="item.data"/>
                     </el-form-item>
                 </div>
             </template>
@@ -46,7 +53,7 @@ onMounted(()=>{
             maxNum.value = item.normal
         }
     })
-    console.log(maxNum)
+    console.log(maxNum,'maxNum')
 })
 
 const props = defineProps({
@@ -108,19 +115,26 @@ const searchHandle = () =>{
 <style scoped lang="less">
 .searchslotbox {
     position: relative;
-    height: 31px;
+    height: 48px;
+    // display: flex;
     .elform {
         z-index: 9;
         background-color: white;
     }
     .item {
         display: inline-block;
-        padding: 5px;
+        box-sizing: border-box;
+        padding: 0 8px;
+        margin: 8px 0;
+        .el-form-item {
+            margin-bottom: 0;
+        }
     }
     .searchButton {
         position: absolute;
         top: 0;
         right: 0px;
+        margin: 8px 0;
     }
 }
 </style>
